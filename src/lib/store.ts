@@ -1,6 +1,13 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import { Track } from '../types'
+
+export interface Track {
+  id: string
+  videoId: string
+  title: string
+  thumbnailUrl: string
+  duration: number
+}
 
 interface Playlist {
   id: string

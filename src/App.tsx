@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { YouTubePlayer } from './components/youtube-player'
 import { Playlist } from './components/playlist'
 import { usePlayerStore } from './lib/store'
 import { extractVideoId, getVideoInfo } from './lib/youtube'
 import { Moon, Sun } from 'lucide-react'
-import { Track } from './types'
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(
@@ -12,17 +11,9 @@ function App() {
   )
   const playerRef = useRef<YT.Player | null>(null)
   const {
-    playlists,
-    currentPlaylistId,
     currentTrack,
-    setCurrentPlaylistId,
     setCurrentTrack,
-    addPlaylist,
-    removePlaylist,
-    renamePlaylist,
     addTrackToPlaylist,
-    removeTrackFromPlaylist,
-    reorderTracksInPlaylist,
   } = usePlayerStore()
 
   // 다크 모드 토글

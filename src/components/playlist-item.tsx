@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical, X } from 'lucide-react'
+import { usePlayerStore } from '../lib/store'
 import { Track } from '../lib/store'
 
 interface PlaylistItemProps {
