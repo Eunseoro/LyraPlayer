@@ -1,8 +1,5 @@
-import { useCallback, useMemo } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical, X } from 'lucide-react'
-import { usePlayerStore } from '../lib/store'
 import { Track } from '../lib/store'
 
 interface PlaylistItemProps {
@@ -24,17 +21,6 @@ export function PlaylistItem({ track, onRemove }: PlaylistItemProps) {
     transition,
   }
 
-  const handleRemove = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation()
-    onRemove()
-  }, [onRemove])
-
-  const formatDuration = useCallback((seconds: number) => {
-    const minutes = Math.floor(seconds / 60)
-    const remainingSeconds = Math.floor(seconds % 60)
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
-  }, [])
-
   return (
     <div
       ref={setNodeRef}
@@ -52,7 +38,7 @@ export function PlaylistItem({ track, onRemove }: PlaylistItemProps) {
         <h3 className="font-medium">{track.title}</h3>
       </div>
       <button
-        onClick={handleRemove}
+        onClick={onRemove}
         className="p-2 hover:bg-muted rounded-full"
       >
         ×
