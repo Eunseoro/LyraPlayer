@@ -4,10 +4,12 @@ import { Track } from '../lib/store'
 
 interface PlaylistItemProps {
   track: Track
+  isSelected: boolean
+  onSelect: () => void
   onRemove: () => void
 }
 
-export function PlaylistItem({ track, onRemove }: PlaylistItemProps) {
+export function PlaylistItem({ track, isSelected, onSelect, onRemove }: PlaylistItemProps) {
   const {
     attributes,
     listeners,
@@ -27,7 +29,10 @@ export function PlaylistItem({ track, onRemove }: PlaylistItemProps) {
       style={style}
       {...attributes}
       {...listeners}
-      className="flex items-center p-2 rounded-lg hover:bg-muted"
+      className={`flex items-center p-2 rounded-lg cursor-pointer transition-colors ${
+        isSelected ? 'bg-primary/10' : 'hover:bg-muted'
+      }`}
+      onClick={onSelect}
     >
       <img
         src={track.thumbnailUrl}
@@ -38,7 +43,10 @@ export function PlaylistItem({ track, onRemove }: PlaylistItemProps) {
         <h3 className="font-medium">{track.title}</h3>
       </div>
       <button
-        onClick={onRemove}
+        onClick={(e) => {
+          e.stopPropagation()
+          onRemove()
+        }}
         className="p-2 hover:bg-muted rounded-full"
       >
         ×

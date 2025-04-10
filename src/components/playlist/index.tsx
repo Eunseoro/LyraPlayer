@@ -2,6 +2,7 @@ import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, us
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { PlaylistItem } from '../playlist-item'
 import { Track } from '../../lib/store'
+import { usePlayerStore } from '../../lib/store'
 
 interface PlaylistProps {
   tracks: Track[]
@@ -10,6 +11,7 @@ interface PlaylistProps {
 }
 
 export function Playlist({ tracks, onTrackRemove, onReorder }: PlaylistProps) {
+  const { currentTrack, setCurrentTrack } = usePlayerStore()
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -36,6 +38,8 @@ export function Playlist({ tracks, onTrackRemove, onReorder }: PlaylistProps) {
             <PlaylistItem
               key={track.id}
               track={track}
+              isSelected={currentTrack?.id === track.id}
+              onSelect={() => setCurrentTrack(track)}
               onRemove={() => onTrackRemove(track.id)}
             />
           ))}
