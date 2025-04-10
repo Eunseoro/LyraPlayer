@@ -2,7 +2,33 @@ import { useEffect, useRef, useState } from 'react'
 
 declare global {
   interface Window {
-    YT: typeof YT
+    YT: {
+      Player: new (
+        elementId: string | HTMLElement,
+        config: {
+          height: string
+          width: string
+          videoId: string
+          playerVars?: {
+            autoplay?: number
+            controls?: number
+            modestbranding?: number
+            rel?: number
+          }
+          events?: {
+            onReady?: (event: { target: YT.Player }) => void
+            onStateChange?: (event: YT.OnStateChangeEvent) => void
+          }
+        }
+      ) => YT.Player
+      PlayerState: {
+        ENDED: number
+        PLAYING: number
+        PAUSED: number
+        BUFFERING: number
+        CUED: number
+      }
+    }
     onYouTubeIframeAPIReady: () => void
   }
 }

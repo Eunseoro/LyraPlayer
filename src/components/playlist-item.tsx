@@ -7,12 +7,10 @@ import { Track } from '../lib/store'
 
 interface PlaylistItemProps {
   track: Track
-  isSelected: boolean
-  onSelect: (track: Track) => void
-  onRemove: (trackId: string) => void
+  onRemove: () => void
 }
 
-export function PlaylistItem({ track, isSelected, onSelect, onRemove }: PlaylistItemProps) {
+export function PlaylistItem({ track, onRemove }: PlaylistItemProps) {
   const {
     attributes,
     listeners,
@@ -26,14 +24,10 @@ export function PlaylistItem({ track, isSelected, onSelect, onRemove }: Playlist
     transition,
   }), [transform, transition])
 
-  const handleSelect = useCallback(() => {
-    onSelect(track)
-  }, [track, onSelect])
-
   const handleRemove = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
-    onRemove(track.id)
-  }, [track.id, onRemove])
+    onRemove()
+  }, [onRemove])
 
   const formatDuration = useCallback((seconds: number) => {
     const minutes = Math.floor(seconds / 60)
@@ -42,36 +36,20 @@ export function PlaylistItem({ track, isSelected, onSelect, onRemove }: Playlist
   }, [])
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`flex items-center p-2 rounded-lg cursor-pointer hover:bg-muted ${
-        isSelected ? 'bg-muted' : ''
-      }`}
-      onClick={handleSelect}
-    >
-      <div
-        {...attributes}
-        {...listeners}
-        className="p-1 hover:bg-muted-foreground/10 rounded cursor-grab"
-      >
-        <GripVertical className="w-4 h-4 text-muted-foreground" />
-      </div>
+    <div className="flex items-center p-2 rounded-lg hover:bg-muted">
       <img
         src={track.thumbnailUrl}
         alt={track.title}
-        className="w-12 h-12 rounded object-cover ml-2"
+        className="w-12 h-12 rounded object-cover"
       />
-      <div className="flex-1 ml-2 min-w-0">
-        <h3 className="text-sm font-medium truncate">{track.title}</h3>
-        <p className="text-xs text-muted-foreground">{formatDuration(track.duration)}</p>
+      <div className="ml-3 flex-1">
+        <h3 className="font-medium">{track.title}</h3>
       </div>
       <button
         onClick={handleRemove}
-        className="p-1 hover:bg-muted-foreground/10 rounded"
-        aria-label="트랙 제거"
+        className="p-2 hover:bg-muted rounded-full"
       >
-        <X className="w-4 h-4 text-muted-foreground" />
+        ×
       </button>
     </div>
   )

@@ -9,7 +9,7 @@ export interface Track {
   duration: number
 }
 
-interface Playlist {
+export interface Playlist {
   id: string
   name: string
   tracks: Track[]
