@@ -1,4 +1,15 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+declare global {
+  interface Window {
+    YT: typeof YT
+    onYouTubeIframeAPIReady: () => void
+  }
+}
+
+interface Player extends YT.Player {
+  destroy: () => void
+}
 
 interface UseYouTubePlayerProps {
   videoId: string

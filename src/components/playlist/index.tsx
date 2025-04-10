@@ -1,78 +1,53 @@
-import { Track } from '../../types'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { PlaylistItem } from '../playlist-item'
+import { Track } from '../../lib/store'
 
 interface PlaylistProps {
   tracks: Track[]
-  currentTrackId?: string
-  onTrackSelect: (track: Track) => void
   onTrackRemove: (trackId: string) => void
-  onTracksReorder: (startIndex: number, endIndex: number) => void
-  onTrackAdd: (track: Track) => void
+  onReorder: (tracks: Track[]) => void
 }
 
-export function Playlist({
-  tracks,
-  currentTrackId,
-  onTrackSelect,
-  onTrackRemove,
-  onTracksReorder,
-  onTrackAdd,
-}: PlaylistProps) {
+export function Playlist({ tracks, onTrackRemove, onReorder }: PlaylistProps) {
   const handleDragEnd = (result: any) => {
     if (!result.destination) return
-    onTracksReorder(result.source.index, result.destination.index)
+
+    const items = Array.from(tracks)
+    const [reorderedItem] = items.splice(result.source.index, 1)
+    items.splice(result.destination.index, 0, reorderedItem)
+
+    onReorder(items)
   }
 
   return (
-    <div className="p-4">
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="playlist">
-          {(provided) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              className="space-y-2"
-            >
-              {tracks.map((track, index) => (
-                <Draggable key={track.id} draggableId={track.id} index={index}>
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className={`flex items-center p-2 rounded-lg cursor-pointer transition-colors ${
-                        currentTrackId === track.id
-                          ? 'bg-primary/10'
-                          : 'hover:bg-muted'
-                      }`}
-                      onClick={() => onTrackSelect(track)}
-                    >
-                      <img
-                        src={track.thumbnailUrl}
-                        alt={track.title}
-                        className="w-12 h-12 rounded object-cover"
-                      />
-                      <div className="ml-3 flex-1">
-                        <h3 className="font-medium">{track.title}</h3>
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onTrackRemove(track.id)
-                        }}
-                        className="p-2 hover:bg-muted rounded-full"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </div>
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <Droppable droppableId="playlist">
+        {(provided: any) => (
+          <div
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+            className="flex flex-col gap-2"
+          >
+            {tracks.map((track, index) => (
+              <Draggable key={track.id} draggableId={track.id} index={index}>
+                {(provided: any) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                  >
+                    <PlaylistItem
+                      track={track}
+                      onRemove={() => onTrackRemove(track.id)}
+                    />
+                  </div>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
   )
 } 
