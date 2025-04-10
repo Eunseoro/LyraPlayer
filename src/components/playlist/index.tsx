@@ -1,4 +1,5 @@
-import { DragDropContext, Droppable, Draggable, DropResult, DroppableProvided, DraggableProvided } from 'react-beautiful-dnd'
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { PlaylistItem } from '../playlist-item'
 import { Track } from '../../lib/store'
 
@@ -9,45 +10,37 @@ interface PlaylistProps {
 }
 
 export function Playlist({ tracks, onTrackRemove, onReorder }: PlaylistProps) {
-  const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
-    const items = Array.from(tracks)
-    const [reorderedItem] = items.splice(result.source.index, 1)
-    items.splice(result.destination.index, 0, reorderedItem)
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event
 
-    onReorder(items)
+    if (active.id !== over.id) {
+      const oldIndex = tracks.findIndex((track) => track.id === active.id)
+      const newIndex = tracks.findIndex((track) => track.id === over.id)
+      const newTracks = arrayMove(tracks, oldIndex, newIndex)
+      onReorder(newTracks)
+    }
   }
 
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="playlist">
-        {(provided: DroppableProvided) => (
-          <div
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-            className="flex flex-col gap-2"
-          >
-            {tracks.map((track, index) => (
-              <Draggable key={track.id} draggableId={track.id} index={index}>
-                {(provided: DraggableProvided) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <PlaylistItem
-                      track={track}
-                      onRemove={() => onTrackRemove(track.id)}
-                    />
-                  </div>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <SortableContext items={tracks.map((track) => track.id)} strategy={verticalListSortingStrategy}>
+        <div className="flex flex-col gap-2">
+          {tracks.map((track) => (
+            <PlaylistItem
+              key={track.id}
+              track={track}
+              onRemove={() => onTrackRemove(track.id)}
+            />
+          ))}
+        </div>
+      </SortableContext>
+    </DndContext>
   )
 } 

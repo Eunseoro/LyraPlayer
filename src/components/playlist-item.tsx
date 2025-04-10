@@ -19,10 +19,10 @@ export function PlaylistItem({ track, onRemove }: PlaylistItemProps) {
     transition,
   } = useSortable({ id: track.id })
 
-  const style = useMemo(() => ({
+  const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  }), [transform, transition])
+  }
 
   const handleRemove = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
@@ -36,7 +36,13 @@ export function PlaylistItem({ track, onRemove }: PlaylistItemProps) {
   }, [])
 
   return (
-    <div className="flex items-center p-2 rounded-lg hover:bg-muted">
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className="flex items-center p-2 rounded-lg hover:bg-muted"
+    >
       <img
         src={track.thumbnailUrl}
         alt={track.title}
