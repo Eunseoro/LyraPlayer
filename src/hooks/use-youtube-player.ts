@@ -19,7 +19,7 @@ interface UseYouTubePlayerProps {
 
 export function useYouTubePlayer({ videoId, onReady, onStateChange }: UseYouTubePlayerProps) {
   const playerRef = useRef<HTMLDivElement>(null)
-  const playerInstanceRef = useRef<YT.Player | null>(null)
+  const playerInstanceRef = useRef<Player | null>(null)
   const apiLoadedRef = useRef(false)
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export function useYouTubePlayer({ videoId, onReady, onStateChange }: UseYouTube
               onStateChange?.(event)
             },
           },
-        })
+        }) as Player
       } catch (error) {
         console.error('YouTube 플레이어 초기화 중 오류 발생:', error)
       }

@@ -1,4 +1,4 @@
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable, Draggable, DropResult, DroppableProvided, DraggableProvided } from 'react-beautiful-dnd'
 import { PlaylistItem } from '../playlist-item'
 import { Track } from '../../lib/store'
 
@@ -9,7 +9,7 @@ interface PlaylistProps {
 }
 
 export function Playlist({ tracks, onTrackRemove, onReorder }: PlaylistProps) {
-  const handleDragEnd = (result: any) => {
+  const handleDragEnd = (result: DropResult) => {
     if (!result.destination) return
 
     const items = Array.from(tracks)
@@ -22,7 +22,7 @@ export function Playlist({ tracks, onTrackRemove, onReorder }: PlaylistProps) {
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable droppableId="playlist">
-        {(provided: any) => (
+        {(provided: DroppableProvided) => (
           <div
             {...provided.droppableProps}
             ref={provided.innerRef}
@@ -30,7 +30,7 @@ export function Playlist({ tracks, onTrackRemove, onReorder }: PlaylistProps) {
           >
             {tracks.map((track, index) => (
               <Draggable key={track.id} draggableId={track.id} index={index}>
-                {(provided: any) => (
+                {(provided: DraggableProvided) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}

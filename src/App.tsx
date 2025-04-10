@@ -12,11 +12,7 @@ function App() {
   const playerRef = useRef<YT.Player | null>(null)
   const {
     currentTrack,
-    tracks,
     setCurrentTrack,
-    addTrack,
-    removeTrack,
-    reorderTracks,
   } = usePlayerStore()
 
   // 다크 모드 토글
